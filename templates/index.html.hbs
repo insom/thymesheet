@@ -6,6 +6,9 @@
 </head>
 
 <body>
+    {{#if this.admin}}
+    <p>You are an admin</p>
+    {{/if}}
     <div>
         {{#each weeks}}
         <p>{{this.body}}</p>
