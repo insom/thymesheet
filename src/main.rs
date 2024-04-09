@@ -7,5 +7,6 @@ use rocket_dyn_templates::Template;
 fn rocket() -> _ {
     rocket::build()
         .mount("/", routes![thymesheet::public::index])
+        .mount("/", routes![thymesheet::admin::index])
         .attach(Template::fairing())
 }

@@ -1,4 +1,5 @@
 use rocket::get;
+#[allow(unused)]
 use diesel::prelude::*;
 use rocket_dyn_templates::{context, Template};
 
