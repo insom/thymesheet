@@ -1573,6 +1573,7 @@ dependencies = [
  "handlebars 5.1.2",
  "rocket",
  "rocket_dyn_templates",
+ "serde",
 ]
 
 [[package]]

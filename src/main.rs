@@ -7,7 +7,7 @@ use thymesheet::{admin, public};
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount("/", routes![public::index])
+        .mount("/", routes![public::index, public::week])
         .mount("/admin", routes![admin::index, admin::login, admin::logout, admin::login_get])
         .register("/admin", catchers![admin::redir_to_login])
         .attach(Template::fairing())

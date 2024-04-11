@@ -8,7 +8,7 @@ pub struct Day {
     pub published: bool,
 }
 
-#[derive(Queryable, Selectable)]
+#[derive(Queryable, Selectable, rocket::serde::Serialize)]
 #[diesel(table_name = crate::schema::weeks)]
 pub struct Week {
     pub id: i32,
