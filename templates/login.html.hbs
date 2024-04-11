@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Thymesheet</title>
-</head>
-
-<body>
+{{#*inline "page"}}
     <div>
         <form action="/admin/login" method="POST">
         <input name="username"><br>
@@ -13,6 +6,5 @@
         <input type="submit">
         </form>
     </div>
-</body>
-
-</html>
+{{/inline}}
+{{> template }}

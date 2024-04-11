@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Thymesheet</title>
-</head>
-
-<body>
-    {{#if this.admin}}
-    <p>You are an admin</p>
-    {{/if}}
+{{#*inline "page"}}
     <div>
         {{#each weeks}}
         <p>{{this.body}}</p>
@@ -16,6 +6,5 @@
         <p>This page intentionally left blank.</p>
         {{/each}}
     </div>
-</body>
-
-</html>
+{{/inline}}
+{{> template }}
