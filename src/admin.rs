@@ -5,7 +5,7 @@ use rocket::http::{CookieJar, Status};
 use rocket::outcome::IntoOutcome;
 use rocket::request;
 use rocket::response::Redirect;
-use rocket::{get, post, request::FromRequest, request::Request};
+use rocket::{catch, get, post, request::FromRequest, request::Request};
 use rocket_dyn_templates::{context, Template};
 
 pub struct AdminUser {}
@@ -29,13 +29,18 @@ impl<'r> FromRequest<'r> for AdminUser {
     }
 }
 
-#[get("/admin")]
+#[get("/")]
 pub fn index(_admin: AdminUser) -> Template {
     let v = Vec::<bool>::new();
     Template::render("index", context! {weeks: &v, admin: true})
 }
 
-#[get("/admin/login")]
+#[catch(403)]
+pub fn redir_to_login() -> Redirect {
+    Redirect::to("/admin/login")
+}
+
+#[get("/login")]
 pub fn login_get() -> Template {
     Template::render("login", context! {})
 }
@@ -46,7 +51,7 @@ pub struct LoginForm<'r> {
     password: &'r str,
 }
 
-#[post("/admin/login", data = "<login>")]
+#[post("/login", data = "<login>")]
 pub fn login(login: Form<LoginForm<'_>>, cookies: &CookieJar<'_>) -> Redirect {
     if login.username == "test" && login.password == "test" {
         cookies.add_private(("admin", "1"));
@@ -55,7 +60,7 @@ pub fn login(login: Form<LoginForm<'_>>, cookies: &CookieJar<'_>) -> Redirect {
     Redirect::to("/admin/login")
 }
 
-#[get("/admin/logout")]
+#[get("/logout")]
 pub fn logout(cookies: &CookieJar<'_>) -> Redirect {
     cookies.remove_private("admin");
     return Redirect::to("/admin/login");
