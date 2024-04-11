@@ -20,7 +20,7 @@ impl<'r> FromRequest<'r> for AdminUser {
 
     async fn from_request(req: &'r Request<'_>) -> request::Outcome<Self, Self::Error> {
         req.cookies()
-            .get("admin")
+            .get_private("admin")
             .and_then(|cookie| cookie.value().parse::<usize>().ok())
             .and_then(|_| Some(AdminUser {}))
             .or_error((Status::Forbidden, AppError::WhoAreYou))
