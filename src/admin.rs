@@ -1,9 +1,11 @@
 #[allow(unused)]
 use diesel::prelude::*;
-use rocket::http::Status;
+use rocket::form::{Form, FromForm};
+use rocket::http::{Cookie, CookieJar, Status};
 use rocket::outcome::IntoOutcome;
 use rocket::request;
-use rocket::{get, request::FromRequest, request::Request};
+use rocket::response::Redirect;
+use rocket::{get, post, request::FromRequest, request::Request};
 use rocket_dyn_templates::{context, Template};
 
 pub struct AdminUser {}
@@ -31,4 +33,19 @@ impl<'r> FromRequest<'r> for AdminUser {
 pub fn index(_admin: AdminUser) -> Template {
     let v = Vec::<bool>::new();
     Template::render("index", context! {weeks: &v, admin: true})
+}
+
+#[derive(FromForm)]
+pub struct LoginForm<'r> {
+    username: &'r str,
+    password: &'r str,
+}
+
+#[post("/admin/login", data = "<login>")]
+pub fn login(login: Form<LoginForm<'_>>, cookies: &CookieJar<'_>) -> Redirect {
+    if login.username == "test" && login.password == "test" {
+        cookies.add_private(("admin", "1"));
+        return Redirect::to("/admin");
+    }
+    Redirect::to("/admin/login")
 }
