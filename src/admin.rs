@@ -1,7 +1,7 @@
 #[allow(unused)]
 use diesel::prelude::*;
 use rocket::form::{Form, FromForm};
-use rocket::http::{Cookie, CookieJar, Status};
+use rocket::http::{CookieJar, Status};
 use rocket::outcome::IntoOutcome;
 use rocket::request;
 use rocket::response::Redirect;
@@ -35,6 +35,11 @@ pub fn index(_admin: AdminUser) -> Template {
     Template::render("index", context! {weeks: &v, admin: true})
 }
 
+#[get("/admin/login")]
+pub fn login_get() -> Template {
+    Template::render("login", context! {})
+}
+
 #[derive(FromForm)]
 pub struct LoginForm<'r> {
     username: &'r str,
@@ -48,4 +53,10 @@ pub fn login(login: Form<LoginForm<'_>>, cookies: &CookieJar<'_>) -> Redirect {
         return Redirect::to("/admin");
     }
     Redirect::to("/admin/login")
+}
+
+#[get("/admin/logout")]
+pub fn logout(cookies: &CookieJar<'_>) -> Redirect {
+    cookies.remove_private("admin");
+    return Redirect::to("/admin/login");
 }
