@@ -1,19 +1,29 @@
 use crate::models::Week;
 use crate::schema::weeks::dsl::*;
 use diesel::prelude::*;
-use rocket::get;
 use rocket::response::status::NotFound;
+use rocket::{get, State};
 use rocket_dyn_templates::{context, Template};
 
+use rocket::serde::Deserialize;
+#[derive(Deserialize)]
+#[serde(crate = "rocket::serde")]
+pub struct Config {
+    foo: String,
+}
+
 #[get("/")]
-pub fn index() -> Template {
+pub fn index(config: &State<Config>) -> Template {
     let mut connection = crate::establish_connection();
     let results = weeks
         .select(Week::as_select())
         .load(&mut connection)
         .unwrap();
 
-    Template::render("index", context! {weeks: &results, admin: false})
+    Template::render(
+        "index",
+        context! {weeks: &results, admin: false, foo: config.foo.clone()},
+    )
 }
 
 #[get("/week/<week>")]
