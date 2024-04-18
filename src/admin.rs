@@ -2,10 +2,10 @@
 use diesel::prelude::*;
 use rocket::form::{Form, FromForm};
 use rocket::http::{CookieJar, Status};
-use rocket::uri;
 use rocket::outcome::IntoOutcome;
 use rocket::request;
 use rocket::response::Redirect;
+use rocket::uri;
 use rocket::{catch, get, post, request::FromRequest, request::Request};
 use rocket_dyn_templates::{context, Template};
 
@@ -38,7 +38,7 @@ pub fn index(_admin: AdminUser) -> Template {
 
 #[catch(403)]
 pub fn redir_to_login() -> Redirect {
-    return Redirect::to(uri!("/admin", login_get))
+    return Redirect::to(uri!("/admin", login_get));
 }
 
 #[get("/login")]
@@ -58,11 +58,11 @@ pub fn login(login: Form<LoginForm<'_>>, cookies: &CookieJar<'_>) -> Redirect {
         cookies.add_private(("admin", "1"));
         return Redirect::to("/admin");
     }
-    return Redirect::to(uri!("/admin", login_get))
+    return Redirect::to(uri!("/admin", login_get));
 }
 
 #[get("/logout")]
 pub fn logout(cookies: &CookieJar<'_>) -> Redirect {
     cookies.remove_private("admin");
-    return Redirect::to(uri!("/admin", login_get))
+    return Redirect::to(uri!("/admin", login_get));
 }
