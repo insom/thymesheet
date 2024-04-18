@@ -3,6 +3,15 @@ extern crate rocket;
 
 use rocket_dyn_templates::Template;
 use thymesheet::{admin, public};
+use rocket_dyn_templates::handlebars::*;
+use markdown;
+
+fn markdownize(h: &Helper, _: &Handlebars, _: &Context, _: &mut RenderContext, out: &mut dyn Output) -> HelperResult {
+    let param = h.param(0).unwrap().value().render();
+
+    out.write(&markdown::to_html(param.as_ref()))?;
+    Ok(())
+}
 
 #[launch]
 fn rocket() -> _ {
@@ -10,5 +19,7 @@ fn rocket() -> _ {
         .mount("/", routes![public::index, public::week])
         .mount("/admin", routes![admin::index, admin::login, admin::logout, admin::login_get])
         .register("/admin", catchers![admin::redir_to_login])
-        .attach(Template::fairing())
+        .attach(Template::custom(|engines: &mut rocket_dyn_templates::Engines| {
+            engines.handlebars.register_helper("markdown", Box::new( markdownize))
+        }))
 }

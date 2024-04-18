@@ -4,7 +4,6 @@ use diesel::prelude::*;
 use rocket::get;
 use rocket::response::status::NotFound;
 use rocket_dyn_templates::{context, Template};
-use markdown;
 
 #[get("/")]
 pub fn index() -> Template {
@@ -29,10 +28,9 @@ pub fn week(week: i32) -> Result<Template, NotFound<String>> {
     if results.len() == 0 {
         return Err(NotFound("Week Not Found".to_string()));
     }
-    let better_results: Vec<_> = results.iter().map(|w| markdown::to_html(&w.body)).collect();
 
     Ok(Template::render(
         "index",
-        context! {weeks: &better_results, admin: false},
+        context! {weeks: &results, admin: false},
     ))
 }
