@@ -6,6 +6,7 @@ use rocket::outcome::IntoOutcome;
 use rocket::request;
 use rocket::response::Redirect;
 use rocket::uri;
+use rocket::State;
 use rocket::{catch, get, post, request::FromRequest, request::Request};
 use rocket_dyn_templates::{context, Template};
 
@@ -53,8 +54,8 @@ pub struct LoginForm<'r> {
 }
 
 #[post("/login", data = "<login>")]
-pub fn login(login: Form<LoginForm<'_>>, cookies: &CookieJar<'_>) -> Redirect {
-    if login.username == "test" && login.password == "test" {
+pub fn login(login: Form<LoginForm<'_>>, cookies: &CookieJar<'_>, config: &State<crate::Config>) -> Redirect {
+    if login.username == config.username && login.password == config.password {
         cookies.add_private(("admin", "1"));
         return Redirect::to("/admin");
     }

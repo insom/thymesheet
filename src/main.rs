@@ -3,6 +3,7 @@ extern crate rocket;
 
 use markdown;
 use rocket::fairing::AdHoc;
+use rocket::fs::FileServer;
 use rocket_dyn_templates::handlebars::*;
 use rocket_dyn_templates::Template;
 use thymesheet::{admin, public};
@@ -23,13 +24,14 @@ fn markdownize(
 #[launch]
 fn rocket() -> _ {
     rocket::build()
+        .mount("/public", FileServer::from("static/"))
         .mount("/", routes![public::index, public::week])
         .mount(
             "/admin",
             routes![admin::index, admin::login, admin::logout, admin::login_get],
         )
         .register("/admin", catchers![admin::redir_to_login])
-        .attach(AdHoc::config::<public::Config>())
+        .attach(AdHoc::config::<thymesheet::Config>())
         .attach(Template::custom(
             |engines: &mut rocket_dyn_templates::Engines| {
                 engines
