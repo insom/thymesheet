@@ -1,0 +1,21 @@
+{{#*inline "page"}}
+    {{#each weeks}}
+
+<form action="/admin/week/{{this.id}}" method="POST">
+    <input type="hidden" name="id" value="{{this.id}}">
+    <div>
+    <label for="username">
+        <span>Body:</span><br/>
+        <textarea name="body" placeholder="What happened?">{{this.body}}</textarea>
+    </label>
+    </div>
+    <div>
+    <label>
+        <input type="submit" value="Update">
+    </label>
+    </div>
+</form>
+
+    {{/each}}
+{{/inline}}
+{{> template }}

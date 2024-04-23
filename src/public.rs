@@ -31,6 +31,6 @@ pub fn week(week: i32, admin: Option<AdminUser>) -> Result<Template, NotFound<St
 
     Ok(Template::render(
         "index",
-        context! {weeks: &results, admin: admin.is_some()},
+        context! {weeks: &results, admin: admin.is_some(), title: format!("Week {}", week)},
     ))
 }

@@ -1,9 +1,11 @@
-#[allow(unused)]
+use crate::models::{Week, WeekForm};
+use crate::schema::weeks::dsl::{body, id, weeks};
 use diesel::prelude::*;
 use rocket::form::{Form, FromForm};
 use rocket::http::{CookieJar, Status};
 use rocket::outcome::IntoOutcome;
 use rocket::request;
+use rocket::response::status::NotFound;
 use rocket::response::Redirect;
 use rocket::uri;
 use rocket::State;
@@ -33,8 +35,56 @@ impl<'r> FromRequest<'r> for AdminUser {
 
 #[get("/")]
 pub fn index(_admin: AdminUser) -> Template {
-    let v = Vec::<bool>::new();
-    Template::render("index", context! {weeks: &v, admin: true})
+    let mut connection = crate::establish_connection();
+    let results = weeks
+        .select(Week::as_select())
+        .load(&mut connection)
+        .unwrap();
+    Template::render("admin/index", context! {weeks: &results, admin: true})
+}
+
+#[post("/week/<week>", data = "<week_form>")]
+pub fn week(
+    week: i32,
+    week_form: Form<WeekForm<'_>>,
+    _admin: AdminUser,
+) -> Result<Redirect, NotFound<String>> {
+    let mut connection = crate::establish_connection();
+    let result: Result<Week, _> = weeks
+        .find(week)
+        .select(Week::as_select())
+        .first(&mut connection);
+
+    match result {
+        Ok(_) => {
+            diesel::update(weeks.find(week))
+                .set(body.eq(week_form.body))
+                .execute(&mut connection)
+                .unwrap();
+            Ok(Redirect::to(format!("/admin/week/{}", week_form.id)))
+        }
+        Err(_) => {
+            Err(NotFound("Week Not Found".to_string()))
+        }
+    }
+}
+
+#[get("/week/<week>")]
+pub fn week_get(week: i32, _admin: AdminUser) -> Result<Template, NotFound<String>> {
+    let mut connection = crate::establish_connection();
+    let results: Vec<_> = weeks
+        .select(Week::as_select())
+        .filter(id.eq(week))
+        .load(&mut connection)
+        .unwrap();
+
+    if results.len() == 0 {
+        return Err(NotFound("Week Not Found".to_string()));
+    }
+    Ok(Template::render(
+        "admin/week",
+        context! {weeks: &results, admin: true},
+    ))
 }
 
 #[catch(403)]
@@ -54,7 +104,11 @@ pub struct LoginForm<'r> {
 }
 
 #[post("/login", data = "<login>")]
-pub fn login(login: Form<LoginForm<'_>>, cookies: &CookieJar<'_>, config: &State<crate::Config>) -> Redirect {
+pub fn login(
+    login: Form<LoginForm<'_>>,
+    cookies: &CookieJar<'_>,
+    config: &State<crate::Config>,
+) -> Redirect {
     if login.username == config.username && login.password == config.password {
         cookies.add_private(("admin", "1"));
         return Redirect::to("/admin");

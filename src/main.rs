@@ -28,7 +28,14 @@ fn rocket() -> _ {
         .mount("/", routes![public::index, public::week])
         .mount(
             "/admin",
-            routes![admin::index, admin::login, admin::logout, admin::login_get],
+            routes![
+                admin::index,
+                admin::login,
+                admin::logout,
+                admin::login_get,
+                admin::week,
+                admin::week_get,
+            ],
         )
         .register("/admin", catchers![admin::redir_to_login])
         .attach(AdHoc::config::<thymesheet::Config>())

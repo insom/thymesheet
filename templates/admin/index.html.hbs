@@ -1,0 +1,10 @@
+{{#*inline "page"}}
+    <div>
+        {{#each weeks}}
+        <p><a href="/admin/week/{{this.id}}">Week {{this.id}}</a></p>
+        {{else}}
+        <p>This page intentionally left blank.</p>
+        {{/each}}
+    </div>
+{{/inline}}
+{{> template }}
