@@ -1,15 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <title>Thymesheet</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"
+        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+        crossorigin="anonymous"></script>
+    <style>
+        form div {
+            padding-top: 10px
+        }
+
+        form div label input,
+        form div input {
+            left: 10em;
+            position: absolute;
+            width: 10em
+        }
+
+        html {
+            display: flex;
+            justify-content: center;
+        }
+
+        body {
+            width: 50em;
+        }
+    </style>
 </head>
 
 <body>
-    {{#if this.admin}}
-    <p>You are an admin</p>
-    {{/if}}
-    {{> page}}
+    <section id="header">
+        <h1>
+            Hello world!
+            {{#if this.admin}}
+            You are an admin.
+            {{/if}}
+        </h1>
+    </section>
+    <section id="content">
+        <div>
+            {{> page}}
+        </div>
+    </section>
 </body>
 
 </html>

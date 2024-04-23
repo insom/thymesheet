@@ -1,10 +1,18 @@
 {{#*inline "page"}}
+<form action="/admin/login" method="POST">
     <div>
-        <form action="/admin/login" method="POST">
-        <input name="username"><br>
-        <input name="password"><br>
-        <input type="submit">
-        </form>
+    <label for="username">Username:
+        <input name="username" placeholder="Username">
+    </label>
     </div>
+    <div>
+    <label for="password">Password:
+        <input name="password" type="password" placeholder="Password">
+    </label>
+    </div>
+    <div>
+    <input type="submit" value="Login">
+    </div>
+</form>
 {{/inline}}
 {{> template }}
