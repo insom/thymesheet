@@ -1,26 +1,23 @@
-use crate::models::Week;
 use crate::schema::weeks::dsl::*;
+use crate::{admin::AdminUser, models::Week};
 use diesel::prelude::*;
-use rocket::response::status::NotFound;
 use rocket::get;
+use rocket::response::status::NotFound;
 use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
-pub fn index() -> Template {
+pub fn index(admin: Option<AdminUser>) -> Template {
     let mut connection = crate::establish_connection();
     let results = weeks
         .select(Week::as_select())
         .load(&mut connection)
         .unwrap();
 
-    Template::render(
-        "index",
-        context! {weeks: &results, admin: false},
-    )
+    Template::render("index", context! {weeks: &results, admin: admin.is_some()})
 }
 
 #[get("/week/<week>")]
-pub fn week(week: i32) -> Result<Template, NotFound<String>> {
+pub fn week(week: i32, admin: Option<AdminUser>) -> Result<Template, NotFound<String>> {
     let mut connection = crate::establish_connection();
     let results: Vec<_> = weeks
         .select(Week::as_select())
@@ -34,6 +31,6 @@ pub fn week(week: i32) -> Result<Template, NotFound<String>> {
 
     Ok(Template::render(
         "index",
-        context! {weeks: &results, admin: false},
+        context! {weeks: &results, admin: admin.is_some()},
     ))
 }
