@@ -11,11 +11,23 @@
             padding-top: 10px
         }
 
+        form div label span,
         form div label input,
         form div input {
-            left: 10em;
-            position: absolute;
-            width: 10em
+            width: 10em;
+            margin: 0;
+            margin-top: 1ex;
+            display: inline-block;
+        }
+        form div label span {
+            padding: 0;
+        }
+        input {
+            padding: 1ex;
+            background-color: #eee;
+            font-family: serif;
+            border-radius: 0.5ex;
+            font-size: 10pt;
         }
 
         html {
@@ -32,11 +44,14 @@
 <body>
     <section id="header">
         <h1>
-            Hello world!
-            {{#if this.admin}}
-            You are an admin.
-            {{/if}}
+            Days and Weeks
         </h1>
+            {{#if this.admin}}
+            <p>
+            You are an admin.
+            <a href="/admin/logout">Logout?</a>
+            </p>
+            {{/if}}
     </section>
     <section id="content">
         <div>

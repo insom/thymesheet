@@ -1,17 +1,25 @@
 {{#*inline "page"}}
+<p>
+    Please sign in.
+</p>
 <form action="/admin/login" method="POST">
     <div>
-    <label for="username">Username:
+    <label for="username">
+        <span>Username:</span>
         <input name="username" placeholder="Username">
     </label>
     </div>
     <div>
-    <label for="password">Password:
+    <label for="password">
+        <span>Password:</span>
         <input name="password" type="password" placeholder="Password">
     </label>
     </div>
     <div>
-    <input type="submit" value="Login">
+    <label>
+        <span></span>
+        <input type="submit" value="Sign In">
+    </label>
     </div>
 </form>
 {{/inline}}
