@@ -4,4 +4,5 @@ target/
 *.pdb
 /target
 data.db
+data.db*
 Rocket.toml

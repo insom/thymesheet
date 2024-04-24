@@ -36,7 +36,10 @@ pub async fn week(
 
     match result {
         Ok(_) => {
-            // FIXME AWDB
+            sqlx::query("UPDATE weeks SET body = ? WHERE id = ?")
+                .bind(week_form.body)
+                .bind(week)
+                .execute(&mut **db).await.unwrap();
             Ok(Redirect::to(format!("/admin/week/{}", week_form.id)))
         }
         Err(_) => {
