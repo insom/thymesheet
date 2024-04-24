@@ -1,5 +1,0 @@
-CREATE TABLE days (
-    id INT NOT NULL PRIMARY KEY,
-    body TEXT NOT NULL,
-    published BOOLEAN NOT NULL DEFAULT FALSE
-)
