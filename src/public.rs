@@ -1,29 +1,19 @@
-use crate::schema::weeks::dsl::*;
-use crate::{admin::AdminUser, models::Week, Thymesheet};
-use diesel::prelude::*;
+use crate::{Thymesheet};
+use sqlx::prelude::*;
 use rocket::get;
 use rocket::response::status::NotFound;
 use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
-pub fn index(admin: Option<AdminUser>) -> Template {
-    let mut connection = crate::establish_connection();
-    let results = weeks
-        .select(Week::as_select())
-        .load(&mut connection)
-        .unwrap();
+pub async fn index(admin: Option<AdminUser>) -> Template {
+    let results: Vec<bool> = Vec::new();
 
     Template::render("index", context! {weeks: &results, admin: admin.is_some()})
 }
 
 #[get("/week/<week>")]
-pub async fn week(week: i32, admin: Option<AdminUser>, db: Thymesheet) -> Result<Template, NotFound<String>> {
-    db.run(|connection| {
-    let results: Vec<_> = weeks
-        .select(Week::as_select())
-        .filter(id.eq(week))
-        .load(&mut connection)
-        .unwrap();
+pub async fn week(week: i32, admin: Option<AdminUser>) -> Result<Template, NotFound<String>> {
+    let results: Vec<bool> = Vec::new();
 
     if results.len() == 0 {
         return Err(NotFound("Week Not Found".to_string()));
@@ -33,5 +23,4 @@ pub async fn week(week: i32, admin: Option<AdminUser>, db: Thymesheet) -> Result
         "index",
         context! {weeks: &results, admin: admin.is_some(), title: format!("Week {}", week)},
     ))
-    }).await
 }

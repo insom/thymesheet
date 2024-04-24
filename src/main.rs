@@ -6,7 +6,7 @@ use rocket::fairing::AdHoc;
 use rocket::fs::FileServer;
 use rocket_dyn_templates::handlebars::*;
 use rocket_dyn_templates::Template;
-use thymesheet::{admin, public};
+use thymesheet::{public};
 
 fn markdownize(
     h: &Helper,
@@ -27,7 +27,7 @@ fn rocket() -> _ {
         .attach(thymesheet::Thymesheet::fairing())
         .mount("/public", FileServer::from("static/"))
         .mount("/", routes![public::index, public::week])
-        .mount(
+/*        .mount(
             "/admin",
             routes![
                 admin::index,
@@ -37,8 +37,8 @@ fn rocket() -> _ {
                 admin::week,
                 admin::week_get,
             ],
-        )
-        .register("/admin", catchers![admin::redir_to_login])
+        ) 
+        .register("/admin", catchers![admin::redir_to_login]) */
         .attach(AdHoc::config::<thymesheet::Config>())
         .attach(Template::custom(
             |engines: &mut rocket_dyn_templates::Engines| {
