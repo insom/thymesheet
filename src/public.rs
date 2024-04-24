@@ -1,18 +1,27 @@
 use crate::{Thymesheet};
-use sqlx::prelude::*;
+use rocket_db_pools::Connection;
+use rocket_db_pools::sqlx::{Row, query};
 use rocket::get;
 use rocket::response::status::NotFound;
 use rocket_dyn_templates::{context, Template};
 
-#[get("/")]
-pub async fn index(admin: Option<AdminUser>) -> Template {
-    let results: Vec<bool> = Vec::new();
+#[derive(sqlx::FromRow, serde::Serialize)]
+pub struct Week {
+    id: i32,
+    body: String,
+}
 
-    Template::render("index", context! {weeks: &results, admin: admin.is_some()})
+#[get("/")]
+pub async fn index(mut db: Connection<Thymesheet>) -> Template {
+    let mut results: Vec<Week> = Vec::new();
+    let w: Week = sqlx::query_as("SELECT id, body FROM weeks").fetch_one(&mut **db).await.unwrap();
+    results.push(w);
+
+    Template::render("index", context! {weeks: &results, admin: false})
 }
 
 #[get("/week/<week>")]
-pub async fn week(week: i32, admin: Option<AdminUser>) -> Result<Template, NotFound<String>> {
+pub async fn week(week: i32) -> Result<Template, NotFound<String>> {
     let results: Vec<bool> = Vec::new();
 
     if results.len() == 0 {
@@ -21,6 +30,6 @@ pub async fn week(week: i32, admin: Option<AdminUser>) -> Result<Template, NotFo
 
     Ok(Template::render(
         "index",
-        context! {weeks: &results, admin: admin.is_some(), title: format!("Week {}", week)},
+        context! {weeks: &results, admin: false, title: format!("Week {}", week)},
     ))
 }

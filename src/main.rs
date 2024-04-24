@@ -7,6 +7,7 @@ use rocket::fs::FileServer;
 use rocket_dyn_templates::handlebars::*;
 use rocket_dyn_templates::Template;
 use thymesheet::{public};
+use rocket_db_pools::Database;
 
 fn markdownize(
     h: &Helper,
@@ -24,7 +25,7 @@ fn markdownize(
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .attach(thymesheet::Thymesheet::fairing())
+        .attach(thymesheet::Thymesheet::init())
         .mount("/public", FileServer::from("static/"))
         .mount("/", routes![public::index, public::week])
 /*        .mount(
