@@ -19,9 +19,7 @@ pub async fn index(mut db: Connection<Thymesheet>) -> Template {
 
     match res {
         Err(_) => { /* nothing happens. */ }
-        Ok(mut w) => {
-            results.append(&mut w)
-        }
+        Ok(mut w) => results.append(&mut w),
     }
     Template::render("index", context! {weeks: &results, admin: false})
 }
