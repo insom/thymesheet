@@ -1,5 +1,5 @@
 use crate::schema::weeks::dsl::*;
-use crate::{admin::AdminUser, models::Week};
+use crate::{admin::AdminUser, models::Week, Thymesheet};
 use diesel::prelude::*;
 use rocket::get;
 use rocket::response::status::NotFound;
@@ -17,8 +17,8 @@ pub fn index(admin: Option<AdminUser>) -> Template {
 }
 
 #[get("/week/<week>")]
-pub fn week(week: i32, admin: Option<AdminUser>) -> Result<Template, NotFound<String>> {
-    let mut connection = crate::establish_connection();
+pub async fn week(week: i32, admin: Option<AdminUser>, db: Thymesheet) -> Result<Template, NotFound<String>> {
+    db.run(|connection| {
     let results: Vec<_> = weeks
         .select(Week::as_select())
         .filter(id.eq(week))
@@ -33,4 +33,5 @@ pub fn week(week: i32, admin: Option<AdminUser>) -> Result<Template, NotFound<St
         "index",
         context! {weeks: &results, admin: admin.is_some(), title: format!("Week {}", week)},
     ))
+    }).await
 }

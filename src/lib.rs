@@ -7,6 +7,8 @@ pub mod schema;
 pub mod admin;
 pub mod public;
 
+use rocket_sync_db_pools::{database, diesel};
+
 pub fn establish_connection() -> SqliteConnection {
     dotenvy::dotenv().ok();
 
@@ -21,3 +23,6 @@ pub struct Config {
     pub username: String,
     pub password: String,
 }
+
+#[database("thymesheet")]
+pub struct Thymesheet(diesel::SqliteConnection);

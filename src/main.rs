@@ -24,6 +24,7 @@ fn markdownize(
 #[launch]
 fn rocket() -> _ {
     rocket::build()
+        .attach(thymesheet::Thymesheet::fairing())
         .mount("/public", FileServer::from("static/"))
         .mount("/", routes![public::index, public::week])
         .mount(
