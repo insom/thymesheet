@@ -1,14 +1,8 @@
-use crate::Thymesheet;
+use crate::{Thymesheet, Week};
 use rocket::get;
 use rocket::response::status::NotFound;
 use rocket_db_pools::Connection;
 use rocket_dyn_templates::{context, Template};
-
-#[derive(sqlx::FromRow, serde::Serialize)]
-pub struct Week {
-    id: i32,
-    body: String,
-}
 
 #[get("/")]
 pub async fn index(mut db: Connection<Thymesheet>) -> Template {

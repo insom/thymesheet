@@ -14,3 +14,9 @@ pub struct Config {
 #[derive(Database)]
 #[database("thymesheet")]
 pub struct Thymesheet(sqlx::SqlitePool);
+
+#[derive(sqlx::FromRow, serde::Serialize)]
+pub struct Week {
+    id: i32,
+    body: String,
+}
