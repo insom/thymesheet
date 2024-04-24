@@ -1,13 +1,13 @@
+use crate::{AdminUser, Thymesheet, Week, WeekForm};
 use rocket::form::{Form, FromForm};
-use rocket::http::{CookieJar};
+use rocket::http::CookieJar;
 use rocket::response::status::NotFound;
 use rocket::response::Redirect;
 use rocket::uri;
 use rocket::State;
 use rocket::{catch, get, post};
-use rocket_dyn_templates::{context, Template};
-use crate::{AdminUser, Week, WeekForm, Thymesheet};
 use rocket_db_pools::Connection;
+use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
 pub async fn index(_admin: AdminUser, mut db: Connection<Thymesheet>) -> Template {
@@ -27,7 +27,8 @@ pub async fn index(_admin: AdminUser, mut db: Connection<Thymesheet>) -> Templat
 pub async fn week(
     week: i32,
     week_form: Form<WeekForm<'_>>,
-    _admin: AdminUser, mut db: Connection<Thymesheet>
+    _admin: AdminUser,
+    mut db: Connection<Thymesheet>,
 ) -> Result<Redirect, NotFound<String>> {
     let result = sqlx::query("SELECT id, body FROM weeks WHERE id = ?")
         .bind(week)
@@ -39,17 +40,20 @@ pub async fn week(
             sqlx::query("UPDATE weeks SET body = ? WHERE id = ?")
                 .bind(week_form.body)
                 .bind(week)
-                .execute(&mut **db).await.unwrap();
+                .execute(&mut **db)
+                .await
+                .unwrap();
             Ok(Redirect::to(format!("/admin/week/{}", week_form.id)))
         }
-        Err(_) => {
-            Err(NotFound("Week Not Found".to_string()))
-        }
+        Err(_) => Err(NotFound("Week Not Found".to_string())),
     }
 }
 
 #[get("/week/<week>")]
-pub async fn week_get(week: i32, _admin: AdminUser, mut db: Connection<Thymesheet>
+pub async fn week_get(
+    week: i32,
+    _admin: AdminUser,
+    mut db: Connection<Thymesheet>,
 ) -> Result<Template, NotFound<String>> {
     let mut results: Vec<Week> = Vec::new();
     let res = sqlx::query_as("SELECT id, body FROM weeks WHERE id = ?")

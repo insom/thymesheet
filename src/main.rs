@@ -4,10 +4,10 @@ extern crate rocket;
 use markdown;
 use rocket::fairing::AdHoc;
 use rocket::fs::FileServer;
+use rocket_db_pools::Database;
 use rocket_dyn_templates::handlebars::*;
 use rocket_dyn_templates::Template;
-use thymesheet::{public, admin};
-use rocket_db_pools::Database;
+use thymesheet::{admin, public};
 
 fn markdownize(
     h: &Helper,

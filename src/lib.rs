@@ -1,13 +1,13 @@
+use rocket::http::Status;
 use rocket::outcome::IntoOutcome;
+use rocket::request;
+use rocket::serde::Deserialize;
 use rocket::{request::FromRequest, request::Request};
 use rocket_db_pools::{sqlx, Database};
-use rocket::serde::Deserialize;
-use rocket::http::Status;
-use rocket::request;
 
 // pub mod admin;
-pub mod public;
 pub mod admin;
+pub mod public;
 
 #[derive(Deserialize)]
 #[serde(crate = "rocket::serde")]
