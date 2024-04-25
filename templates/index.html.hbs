@@ -1,7 +1,7 @@
 {{#*inline "page"}}
     <div>
-        <p>debug: {{ foo }}</p>
         {{#each weeks}}
+        <h3>{{this.id}}</h3>
         <p>{{markdown this.body}}</p>
         {{else}}
         <p>This page intentionally left blank.</p>

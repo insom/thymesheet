@@ -37,6 +37,8 @@ fn rocket() -> _ {
                 admin::login_get,
                 admin::week,
                 admin::week_get,
+                admin::new_week,
+                admin::new_week_get,
             ],
         )
         .register("/admin", catchers![admin::redir_to_login])

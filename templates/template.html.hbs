@@ -39,6 +39,7 @@
             border-radius: 0.5ex;
             font-size: 10pt;
         }
+        h3 { margin-left: -1em; color: gray }
 
         html {
             display: flex;
@@ -56,16 +57,10 @@
         <h1>
             Days and Weeks
         </h1>
-            {{#if this.admin}}
-            <p>
-            You are an admin.
-            <a href="/admin/logout">Logout?</a>
-            </p>
-            {{/if}}
     </section>
     <section id="content">
         <div>
-            {{> page}}
+            {{~> page~}}
         </div>
     </section>
 </body>

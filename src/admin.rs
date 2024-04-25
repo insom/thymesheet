@@ -12,7 +12,7 @@ use rocket_dyn_templates::{context, Template};
 #[get("/")]
 pub async fn index(_admin: AdminUser, db: Connection<Thymesheet>) -> Template {
     let results = crate::get_weeks(db).await;
-    Template::render("admin/index", context! {weeks: &results, admin: false})
+    Template::render("admin/index", context! {weeks: &results})
 }
 
 #[post("/week/<week>", data = "<week_form>")]
@@ -41,13 +41,33 @@ pub async fn week(
     }
 }
 
+#[post("/week", data = "<week_form>")]
+pub async fn new_week(
+    week_form: Form<WeekForm<'_>>,
+    _admin: AdminUser,
+    mut db: Connection<Thymesheet>,
+) -> Result<Redirect, NotFound<String>> {
+    sqlx::query("INSERT INTO weeks (id, body) VALUES (?, ?)")
+        .bind(week_form.id)
+        .bind(week_form.body)
+        .execute(&mut **db)
+        .await
+        .unwrap();
+    Ok(Redirect::to(format!("/admin/week/{}", week_form.id)))
+}
+
+#[get("/week")]
+pub async fn new_week_get(_admin: AdminUser) -> Template {
+    Template::render("admin/week", context! {weeks: [0]})
+}
+
 #[get("/week/<week>")]
 pub async fn week_get(
     week: i32,
     _admin: AdminUser,
     db: Connection<Thymesheet>,
 ) -> Result<Template, NotFound<String>> {
-    crate::render_week(week, String::from("admin/index"), db).await
+    crate::render_week(week, String::from("admin/week"), db).await
 }
 
 #[catch(403)]

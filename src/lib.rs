@@ -58,7 +58,7 @@ impl<'r> FromRequest<'r> for AdminUser {
 
 pub async fn get_weeks(mut db: Connection<Thymesheet>) -> Vec<Week> {
     let mut results: Vec<Week> = Vec::new();
-    let res: Result<Vec<Week>, _> = sqlx::query_as("SELECT id, body FROM weeks")
+    let res: Result<Vec<Week>, _> = sqlx::query_as("SELECT id, body FROM weeks ORDER BY id DESC")
         .fetch_all(&mut **db)
         .await;
 
@@ -90,7 +90,7 @@ pub async fn render_week(
 
             Ok(Template::render(
                 template,
-                context! {weeks: &results, admin: false, title: format!("Week {}", week)},
+                context! {weeks: &results, title: format!("Week {}", week)},
             ))
         }
     }

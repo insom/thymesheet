@@ -1,12 +1,18 @@
 {{#*inline "page"}}
+<p><a href="/admin/"> &lArr; Listings</a></p>
     {{#each weeks}}
 
 <form action="/admin/week/{{this.id}}" method="POST">
-    <input type="hidden" name="id" value="{{this.id}}">
+    <label for="id">
+        <span>ID:</span><br/>
+        <input name="id" value="{{this.id}}">
+    </label>
     <div>
     <label for="username">
         <span>Body:</span><br/>
-        <textarea name="body" placeholder="What happened?">{{this.body}}</textarea>
+<textarea name="body" placeholder="What happened?">
+{{~this.body~}}
+</textarea>
     </label>
     </div>
     <div>
