@@ -1,4 +1,4 @@
-use crate::{AdminUser, Thymesheet, Week, WeekForm};
+use crate::{AdminUser, Thymesheet, WeekForm};
 use rocket::form::{Form, FromForm};
 use rocket::http::CookieJar;
 use rocket::response::status::NotFound;
@@ -10,16 +10,8 @@ use rocket_db_pools::Connection;
 use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
-pub async fn index(_admin: AdminUser, mut db: Connection<Thymesheet>) -> Template {
-    let mut results: Vec<Week> = Vec::new();
-    let res: Result<Vec<Week>, _> = sqlx::query_as("SELECT id, body FROM weeks")
-        .fetch_all(&mut **db)
-        .await;
-
-    match res {
-        Err(_) => { /* nothing happens. */ }
-        Ok(mut w) => results.append(&mut w),
-    }
+pub async fn index(_admin: AdminUser, db: Connection<Thymesheet>) -> Template {
+    let results = crate::get_weeks(db).await;
     Template::render("admin/index", context! {weeks: &results, admin: false})
 }
 
@@ -53,27 +45,9 @@ pub async fn week(
 pub async fn week_get(
     week: i32,
     _admin: AdminUser,
-    mut db: Connection<Thymesheet>,
+    db: Connection<Thymesheet>,
 ) -> Result<Template, NotFound<String>> {
-    let mut results: Vec<Week> = Vec::new();
-    let res = sqlx::query_as("SELECT id, body FROM weeks WHERE id = ?")
-        .bind(week)
-        .fetch_one(&mut **db)
-        .await;
-
-    match res {
-        Err(_) => {
-            return Err(NotFound("Week Not Found".to_string()));
-        }
-        Ok(w) => {
-            results.push(w);
-
-            Ok(Template::render(
-                "admin/week",
-                context! {weeks: &results, admin: false, title: format!("Week {}", week)},
-            ))
-        }
-    }
+    crate::render_week(week, String::from("admin/index"), db).await
 }
 
 #[catch(403)]
