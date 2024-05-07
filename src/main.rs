@@ -30,7 +30,7 @@ fn rocket() -> _ {
     rocket::build()
         .attach(thymesheet::Thymesheet::init())
         .mount("/public", FileServer::from("static/"))
-        .mount("/", routes![public::index, public::week])
+        .mount("/", routes![public::index, public::week, public::rss_feed])
         .mount(
             "/admin",
             routes![

@@ -17,6 +17,7 @@ pub mod public;
 pub struct Config {
     pub username: String,
     pub password: String,
+    pub base_url: String,
 }
 
 #[derive(Database)]
