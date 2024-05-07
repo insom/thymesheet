@@ -22,6 +22,9 @@ fn markdownize(
     Ok(())
 }
 
+handlebars_helper!(yearize: |v: i64| format!("{:04}", v / 100));
+handlebars_helper!(weekize: |v: i64| format!("{:02}", v % 100));
+
 #[launch]
 fn rocket() -> _ {
     rocket::build()
@@ -45,9 +48,9 @@ fn rocket() -> _ {
         .attach(AdHoc::config::<thymesheet::Config>())
         .attach(Template::custom(
             |engines: &mut rocket_dyn_templates::Engines| {
-                engines
-                    .handlebars
-                    .register_helper("markdown", Box::new(markdownize))
+                engines.handlebars.register_helper("markdown", Box::new(markdownize));
+                engines.handlebars.register_helper("year", Box::new(yearize));
+                engines.handlebars.register_helper("week", Box::new(weekize));
             },
         ))
 }

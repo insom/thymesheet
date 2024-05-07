@@ -1,7 +1,8 @@
 {{#*inline "page"}}
     <div>
         {{#each weeks}}
-        <h3>{{this.id}}</h3>
+        <a name="{{this.id}}"></a>
+        <h3>{{year this.id}}&ndash;W{{week this.id}} <a href="#{{this.id}}">#</a></h3>
         <p>{{markdown this.body}}</p>
         {{else}}
         <p>This page intentionally left blank.</p>
