@@ -1,0 +1,5 @@
+#!/bin/bash
+set -eu
+cargo build --release
+rsync -Pvrax target/release/thymesheet static templates insom@x5x:thymesheet/
+ssh x5x sv k ~/.service/thymesheet
